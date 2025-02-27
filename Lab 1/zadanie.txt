@@ -5,4 +5,5 @@ Stworzyć narzędzia pozwalające na wykonywanie czynności
 - "czyszczenie" canvasu - Clear button:
 - dodanie jednego nowego koloru do elementu <select>. Implementować nowy kolor przez funkcję doMouseMove.
 
--  opracowanie nowego narzędzia - rysowania szeregu wielokątów (zgodnie z wariantem zadania). Opcja ma być dostępna przez nowy element <select>
+-  opracowanie nowego narzędzia - rysowania szeregu wielokątów (zgodnie z wariantem zadania). 
+Opcja ma być dostępna przez nowy element <select>
