@@ -20,7 +20,8 @@
     var pixelSize;  // The size of one pixel, in the transformed coordinates.
             
     var frameNumber = 0;  // Current frame number. goes up by one in each frame.
-    
+
+    let angle = 0;
 
     // TODO:  Define any other necessary state variables.
     
@@ -32,9 +33,36 @@
 
         // TODO: Draw the content of the scene.
         // rotatingRect();  // (DELETE THIS EXAMPLE)
-        rotatingPolygon(0, 0, 0.5, 10);
+
+        angle += 0.05
+
+        rectAngle = -0.25;
+        
+        
+        rotatingPolygon(-0.5, -0.1, 0.5, 1, angle);
+        rotatingPolygon(0.93, -0.45, 0.5, 1, angle);
+
+        rotatingPolygon(1.65, 0.95, 0.5, 0.75, angle);
+        rotatingPolygon(0.56, 1.22, 0.5, 0.75, angle);
+        
+        rotatingPolygon(-1.4, 1.07, 0.5, 0.5, angle);
+        rotatingPolygon(-0.69, 0.88, 0.5, 0.5, angle);
+
+        createThisSomething(0.5, -0.5, "blue", 1);
+        createThisSomething(2, 2.5, "#008000", 0.75);
+        createThisSomething(-2.6, 2, "#800080", 0.5);
     }
     
+
+    function createThisSomething(x, y, color, scale) {
+        filledRect(x, y, scale, rectAngle);
+        
+        graphics.translate(x, y);
+        graphics.rotate(-rectAngle);
+        graphics.translate(-x, -y);
+
+        filledTriangle(x, y, scale, color);
+    }
     /**
      * This method is called just before each frame is drawn.  It updates the modeling
      * transformations of the objects in the scene that are animated.
@@ -56,11 +84,11 @@
         graphics.restore();
     }
 
-    function rotatingPolygon(x, y, radius, rotation) {
+    function rotatingPolygon(x, y, radius, scale, rotation) {
         graphics.save();
         graphics.translate(x, y);
-        graphics.rotate( (frameNumber*0.75) * Math.PI/180 );
-        regularPolygon(x, y , 11, radius ,rotation)
+        // graphics.rotate( (frameNumber*0.75) * Math.PI/180 );
+        regularPolygon(x, y , 11, radius, scale, rotation);
         graphics.restore();
     }
 
@@ -74,7 +102,7 @@
         graphics.stroke();
     }
 
-    function regularPolygon(x, y, numSides, radius, rotation) {
+    function regularPolygon(x, y, numSides, radius, scale, rotation) {
         graphics.save();
         graphics.translate(x, y);
         graphics.rotate(rotation);
@@ -84,10 +112,10 @@
             const px = radius * Math.cos(Math.PI * 2 * i / numSides);
             const py = radius * Math.sin(Math.PI * 2 * i / numSides);
             if(i == 0) {
-                graphics.moveTo(px, py);
+                graphics.moveTo(px * scale, py * scale);
             }
             else {
-                graphics.lineTo(px, py);
+                graphics.lineTo(px * scale, py * scale);
             }
             // graphics.lineTo(x, y);
             // regPol.lineTo(x, y);
@@ -116,11 +144,16 @@
         // graphics.restore();
     }
     function rect() { // Strokes a square, size = 1, center = (0,0)
-        graphics.strokeRect(-0.5,-0.5,1,1);
+        graphics.strokeRect(-0.5,-0.5, 2, 0.25);
     }
 
-    function filledRect() { // Fills a square, size = 1, center = (0,0)
-        graphics.fillRect(-0.5,-0.5,1,1);
+    function filledRect(x, y, scale, rectAngle) { // Fills a square, size = 1, center = (0,0)
+        graphics.translate(x * 0.5, y * 0.5);
+        graphics.rotate(rectAngle);
+        graphics.translate(x * -0.5, y * -0.5);
+        
+        graphics.fillStyle = "red";
+        graphics.fillRect(-1.5*scale + x, -0.125*scale + y, 3*scale, 0.25*scale);
     }
 
     function circle() { // Strokes a circle, diameter = 1, center = (0,0)
@@ -135,13 +168,14 @@
         graphics.fill();
     }
 
-	function filledTriangle(g2) {// Filled Triangle, width 1, height 1, center of base at (0,0)
-		g2.beginPath();
-		g2.moveTo(-0.5,0);
-		g2.lineTo(0.5,0);
-		g2.lineTo(0,1);
-		g2.closePath();
-		g2.fill();
+	function filledTriangle(x, y, scale, color) {// Filled Triangle, width 1, height 1, center of base at (0,0)
+		graphics.beginPath();
+		graphics.moveTo(x, y);
+        graphics.lineTo(-0.25 * scale + x, -2 * scale + y);
+        graphics.lineTo(0.25 * scale + x, -2 * scale + y);
+		graphics.closePath();
+        graphics.fillStyle = color;
+		graphics.fill();
 	}
 
  
