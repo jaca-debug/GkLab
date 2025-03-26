@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="300px"
+    height="200px" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid">
+    <defs>
+        <g id="prostokat">
+            <rect transform="rotate (20), scale(3.2, 0.35)" x="2.25" y="10" width="1" height="1" />
+        </g>
+        <g id="trojkat">
+            <polygon transform="translate(7,8), scale(0.4,1.5)" points="0,-1 1,1 -1,1" />
+        </g>
+        <g id="kreciol">
+            <polygon class="krecenie" points="2,1 1.84,1.54 1.42,1.91 0.86,1.99 0.35,1.76 0.04,1.28 0.04,0.72 0.35,0.24 0.86,0.01 1.42,0.09 1.84,0.46 2,1" 
+                     stroke="black" 
+                     fill="none" 
+                     stroke-width="0.05">
+                <animateTransform attributeName="transform" 
+                    type="rotate"
+                    from="0 0.962 0.962"
+                    to="360 0.962 0.962"
+                    dur="6s"
+                    repeatCount="indefinite"
+                    additive="sum"
+                    transform-origin="center"/>
+            </polygon>
+        </g>
+    </defs>
+
+    <use xlink:href="#prostokat" fill="red"/>
+    <use xlink:href="#trojkat" fill="blue"/>
+
+    <use xlink:href="#prostokat" fill="red" transform="translate(4, -3), scale(0.8)"/>
+    <use xlink:href="#trojkat" fill="#008000" transform="translate(4, -3), scale(0.8)" />
+
+    <use xlink:href="#prostokat" fill="red" transform="translate(-4, -1), scale(0.6)"/>
+    <use xlink:href="#trojkat" fill="#800080" transform="translate(-4, -1), scale(0.6)"/>
+
+    <use xlink:href="#kreciol" transform="translate(4.7, 5.1) scale(0.8)"/>
+    <use xlink:href="#kreciol" transform="translate(7.7, 6.15) scale(0.8)"/>
+
+    <use xlink:href="#kreciol" transform="translate(7.8, 1.1) scale(0.6)"/>
+    <use xlink:href="#kreciol" transform="translate(10.2, 2) scale(0.6)"/>
+
+    <use xlink:href="#kreciol" transform="translate(-1.1, 2.15) scale(0.4)"/>
+    <use xlink:href="#kreciol" transform="translate(0.7, 2.8) scale(0.4)"/>
+</svg>
