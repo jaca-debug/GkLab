@@ -74,76 +74,111 @@
 
         var wielokatChoice;
 
+        function drawWielokat(x, y, n) {
+            // let wielokat = new Path2D();
+            graphics.moveTo(x,y);
+            switch(n) {
+                case 4:
+                    return;
+                case 5: 
+                    graphics.strokePoly(x, y, 
+                                      x + 20, y,
+                                      x + 40, y + 20,
+                                      x + 10, y + 40,
+                                      x - 20, y + 20);
+                    graphics.fill();
+                    break;
+                case 6: 
+                    graphics.strokePoly(x, y, 
+                                      x + 20, y,
+                                      x + 40, y + 20,
+                                      x + 20, y + 40,
+                                      x, y + 40,
+                                      x - 20, y + 20);
+                    graphics.fill();
+                    break;
+                case 7: 
+                    graphics.strokePoly(x, y, 
+                                      x + 20, y,
+                                      x + 40, y + 15,
+                                      x + 50, y + 30,
+                                      x + 20, y + 50,
+                                      x - 30, y + 30,
+                                      x - 20, y + 15);
+                    graphics.fill();
+                    break;
+            }
+
+
+        }
         function drawDiamond(x, y) {
             let diamond = new Path2D();
                 
-                diamond.moveTo(x, y);
-                diamond.lineTo(x + 100, y);
-                diamond.lineTo(x + 125, y + 40);
-                diamond.lineTo(x + 125, y + 40);
-                diamond.lineTo(x + 50, y + 150);
-                diamond.lineTo(x - 25, y + 40);
-                diamond.lineTo(x, y);
-                // diamond.moveTo(175, 240);
-                // diamond.lineTo()
-                diamond.closePath();
-                
-                graphics.lineWidth = 5;
-                graphics.stroke(diamond, "black");
-                graphics.lineWidth = 1;
+            diamond.moveTo(x, y);
+            diamond.lineTo(x + 100, y);
+            diamond.lineTo(x + 125, y + 40);
+            diamond.lineTo(x + 125, y + 40);
+            diamond.lineTo(x + 50, y + 150);
+            diamond.lineTo(x - 25, y + 40);
+            diamond.lineTo(x, y);
+            diamond.closePath();
+            
+            graphics.lineWidth = 5;
+            graphics.stroke(diamond, "black");
+            graphics.lineWidth = 1;
 
-                graphics.fillStyle = "#ff00fe";
-                graphics.fill(diamond);
+            graphics.fillStyle = "#ff00fe";
+            graphics.fill(diamond);
 
-                graphics.moveTo(x - 25, y + 40);
-                graphics.lineTo(x + 125, y + 40);
-                graphics.lineWidth = 3;
-                graphics.stroke();
-                graphics.lineWidth = 1;
+            graphics.moveTo(x - 25, y + 40);
+            graphics.lineTo(x + 125, y + 40);
+            graphics.lineWidth = 3;
+            graphics.stroke();
+            graphics.lineWidth = 1;
 
-                graphics.fillStyle = "white";
-                graphics.fillOval(x + 15, y + 20, 10, 10);
-                graphics.fillOval(x + 85, y + 20, 10, 10);
+            graphics.fillStyle = "white";
+            graphics.fillOval(x + 15, y + 20, 10, 10);
+            graphics.fillOval(x + 85, y + 20, 10, 10);
 
-                graphics.fillStyle = "black";
-                graphics.fillOval(x + 15, y + 20, 6, 6);
-                graphics.fillOval(x + 85, y + 20, 6, 6);
+            graphics.fillStyle = "black";
+            graphics.fillOval(x + 15, y + 20, 6, 6);
+            graphics.fillOval(x + 85, y + 20, 6, 6);
 
-                graphics.fillStyle = "white";
-                graphics.fillOval(x + 12.5, y + 17.5, 2, 2);
-                graphics.fillOval(x + 83.5, y + 17.5, 2, 2);
-                
+            graphics.fillStyle = "white";
+            graphics.fillOval(x + 12.5, y + 17.5, 2, 2);
+            graphics.fillOval(x + 83.5, y + 17.5, 2, 2);
+            
 
-                let corner1 = new Path2D();
-                corner1.moveTo(x + 20, y + 75);
-                corner1.quadraticCurveTo(x + 27, y + 75, x + 21.5, y + 68);
-                corner1.quadraticCurveTo(x + 22.5, y + 75, x + 21.5, y + 75);
-                corner1.closePath();
+            let corner1 = new Path2D();
+            corner1.moveTo(x + 20, y + 75);
+            corner1.quadraticCurveTo(x + 27, y + 75, x + 21.5, y + 68);
+            corner1.quadraticCurveTo(x + 22.5, y + 75, x + 21.5, y + 75);
+            corner1.closePath();
 
 
-                let smile = new Path2D();
-                smile.moveTo(x + 22.5, y + 72.5);
-                smile.quadraticCurveTo(x + 50, y + 85, x + 80, y + 72.5);
-                smile.quadraticCurveTo(x + 50, y + 110, x + 22.5, y + 72.5);
+            let smile = new Path2D();
+            smile.moveTo(x + 22.5, y + 72.5);
+            smile.quadraticCurveTo(x + 50, y + 85, x + 80, y + 72.5);
+            smile.quadraticCurveTo(x + 50, y + 110, x + 22.5, y + 72.5);
 
-                let corner2 = new Path2D();
-                corner2.moveTo(x + 80, y +68.5);
-                corner2.quadraticCurveTo(x + 75, y + 75, x + 81.5, y + 76);
-                corner2.quadraticCurveTo(x + 79, y + 75, x + 80, y + 68.5);
-                
-                
-                graphics.stroke(corner1);
-                graphics.stroke(smile);
-                graphics.stroke(corner2);
+            let corner2 = new Path2D();
+            corner2.moveTo(x + 80, y +68.5);
+            corner2.quadraticCurveTo(x + 75, y + 75, x + 81.5, y + 76);
+            corner2.quadraticCurveTo(x + 79, y + 75, x + 80, y + 68.5);
+            
+            
+            graphics.stroke(corner1);
+            graphics.stroke(smile);
+            graphics.stroke(corner2);
 
-                graphics.fillStyle = "black";
-                graphics.fill(corner1);
-                graphics.fill(smile);
-                graphics.fill(corner2);
-                
-                graphics.fillStyle = "white";
-                graphics.fillRect(x + 45, y + 79, 5, 5);
-                graphics.fillRect(x + 51, y + 79, 5, 5);
+            graphics.fillStyle = "black";
+            graphics.fill(corner1);
+            graphics.fill(smile);
+            graphics.fill(corner2);
+            
+            graphics.fillStyle = "white";
+            graphics.fillRect(x + 45, y + 79, 5, 5);
+            graphics.fillRect(x + 51, y + 79, 5, 5);
         }
         
         function doMouseDown(evt) {
@@ -188,13 +223,6 @@
                 return;  // don't draw squares too close together
             }
             
-            if (wielokatChoice == 1) {
-                drawDiamond(x, y);
-
-                prevX = x;
-                prevY = y;
-                return;
-            }
 
             if (colorChoice == 0) {
                 graphics.fillStyle = randomColorString();
@@ -211,9 +239,26 @@
             else if (colorChoice == 4) {
                 graphics.fillStyle = "pink";
             }
+
+            if (wielokatChoice != 0 && wielokatChoice + 4 < 8) {
+                drawWielokat(x, y, wielokatChoice + 4);
+                prevX = x;
+                prevY = y;
+                return;
+            }
+            if (wielokatChoice + 4 == 8)
+            {
+                drawDiamond(x, y);
+
+                prevX = x;
+                prevY = y;
+                return;
+            }
+
             graphics.fillRect(x-20,y-20,40,40);
             graphics.strokeRect(x-20,y-20,40,40);
             
+
             /*------------------------------------------------------------*/
             
             prevX = x;  // update prevX,prevY to prepare for next call to doMouseMove
@@ -363,7 +408,10 @@
     <p><b>Wielokąty:</b>
         <select id="wielokatChoice">
             <option value="0">Kwadrat</option>
-            <option value="1">Wariant 7</option>
+            <option value="1">Pięciokąt</option>
+            <option value="2">Sześciokąt</option>
+            <option value="3">Siedmiokąt</option>
+            <option value="4">"Wariant 7"</option>
         </select>
     </p>
 </div>
