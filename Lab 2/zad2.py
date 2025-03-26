@@ -1,5 +1,4 @@
 import pygame
-import zad1
 
 
 if __name__ == "__main__":
