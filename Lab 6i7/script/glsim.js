@@ -1041,7 +1041,7 @@ GLSim.prototype._fixArrayForGL_QUADS = function(array, itemSize) {
     }
     return newarray;
 };
-GLSim.lightCount = 4; // Can be changed BEFORE creating a GLSim object.
+GLSim.lightCount = 5; // Can be changed BEFORE creating a GLSim object.
 GLSim.currentContext = null;
 GLSim.error = function(message) {
     if (window.console && console.log ) {
@@ -2015,7 +2015,7 @@ function glCreateTexture() {  // not part of OpenGL!
         //***** Modified to return an integer texture ID instead of a WebGL texture.
     if (!GLSim.currentContext) { GLSim.error("No OpenGL context"); return null; }
     var A = [];
-    glGenTextures(1,A);
+    glGenTexures(1,A);
     return A[0];
 }
 function glBindTexture(mode, texID) {
