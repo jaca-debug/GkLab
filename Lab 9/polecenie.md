@@ -1,4 +1,4 @@
-- podstawę zastąpić wielokątem
-- konie żeby się ładowały (wypakować z resources)
-- na każdym pręcie dorobić konia
-- ilość prętów zgodna z ilością boków wielokąta
+- podstawę zastąpić swoim wielokątem DONE
+- konie żeby się ładowały (wypakować z resources) DONE
+- na każdym pręcie dorobić konia DONE
+- ilość prętów zgodna z ilością boków wielokąta DONE
