@@ -1,0 +1,4 @@
+- podstawę zastąpić wielokątem
+- konie żeby się ładowały (wypakować z resources)
+- na każdym pręcie dorobić konia
+- ilość prętów zgodna z ilością boków wielokąta

@@ -4,6 +4,7 @@ Wykłady/
 *.pdf
 *.tmp
 *.zip
+three.js-master
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

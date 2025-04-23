@@ -48,8 +48,6 @@
             glLoadIdentity();
             glMatrixMode(GL_MODELVIEW);
 
-            // draw2DScene();
-
             if (objectNumber == 7) {
                 return;   // Just show the 2D scene as the image in the canvas.
             }
@@ -271,117 +269,6 @@
                 document.getElementById("headline").innerHTML = "Drawing a texture";
             }
         }
-
-        function draw2DScene() {
-
-            glClearColor(0.7, 0.8, 1.0, 1.0);
-            glClear(GL_COLOR_BUFFER_BIT); // Fills the scene with blue.
-            glLoadIdentity();
-
-
-
-
-            /* Draw three green triangles to form a ridge of hills in the background */
-
-            // if (!imageLoaded) {
-                
-            //     image.onload = function() {
-            //         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-            //         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  // MUST set this since we don't have mipmaps
-            //     }
-            //     imageLoaded = true;
-            // }
-
-            // glColor3f(0, 0.6, 0.2);
-            // glBegin(GL_POLYGON);
-            // glVertex2f(-3, -1);
-            // glVertex2f(1.5, 1.65);
-            // glVertex2f(5, -1);
-            // glEnd();
-            // glBegin(GL_POLYGON);
-            // glVertex2f(-3, -1);
-            // glVertex2f(3, 2.1);
-            // glVertex2f(7, -1);
-            // glEnd();
-            // glBegin(GL_POLYGON);
-            // glVertex2f(0, -1);
-            // glVertex2f(6, 1.2);
-            // glVertex2f(20, -1);
-            // glEnd();
-
-            // /* Draw a bluish-gray rectangle to represent the road. */
-
-            // glColor3f(0.4, 0.4, 0.5);
-            // glBegin(GL_POLYGON);
-            // glVertex2f(0, -0.4);
-            // glVertex2f(7, -0.4);
-            // glVertex2f(7, 0.4);
-            // glVertex2f(0, 0.4);
-            // glEnd();
-
-            // /* Draw a white line to represent the stripe down the middle
-            //  * of the road. */
-
-            // glLineWidth(4);  // Set the line width to be 6 pixels.
-            // glColor3f(1, 1, 1);
-            // glBegin(GL_LINES);
-            // glVertex2f(0, 0);
-            // glVertex2f(7, 0);
-            // glEnd();
-            // glLineWidth(1);  // Reset the line width to be 1 pixel.
-
-            // /* Draw the sun.  The drawSun method draws the sun centered at (0,0).  A 2D translation
-            //  * is applied to move the center of the sun to (5,3.3).   A rotation makes it rotate*/
-
-            // glPushMatrix();
-            // glTranslated(5.8, 3, 0);
-            // glRotated(-frameNumber * 0.7, 0, 0, 1);
-            // drawSun();
-            // glPopMatrix();
-
-            // /* Draw three windmills.  The drawWindmill method draws the windmill with its base 
-            //  * at (0,0), and the top of the pole at (0,3).  Each windmill is first scaled to change
-            //  * its size and then translated to move its base to a different paint.  In the animation,
-            //  * the vanes of the windmill rotate.  That rotation is done with a transform inside the
-            //  * drawWindmill method. */
-
-            // glPushMatrix();
-            // glTranslated(0.75, 1, 0);
-            // glScaled(0.6, 0.6, 1);
-            // drawWindmill();
-            // glPopMatrix();
-
-            // glPushMatrix();
-            // glTranslated(2.2, 1.6, 0);
-            // glScaled(0.4, 0.4, 1);
-            // drawWindmill();
-            // glPopMatrix();
-
-            // glPushMatrix();
-            // glTranslated(3.7, 0.8, 0);
-            // glScaled(0.7, 0.7, 1);
-            // drawWindmill();
-            // glPopMatrix();
-
-            // /* Draw the cart.  The drawCart method draws the cart with the center of its base at
-            //  * (0,0).  The body of the cart is 5 units long and 2 units high.  A scale is first
-            //  * applied to the cart to make its size more reasonable for the picture.  Then a
-            //  * translation is applied to move the cart horizontally.  The amount of the translation
-            //  * depends on the frame number, which makes the cart move from left to right across
-            //  * the screen as the animation progresses.  The cart animation repeats every 300 
-            //  * frames.  At the beginning of the animation, the cart is off the left edge of the
-            //  * screen. */
-
-            // glPushMatrix();
-            // glTranslated(-3 + 13 * (frameNumber % 300) / 300.0, 0, 0);
-            // glScaled(0.3, 0.3, 1);
-            // drawCart();
-            // glPopMatrix();
-
-
-        }  // end display
-
-
         //-------------------------------------------------------------------------------
 
         var animating = false;
