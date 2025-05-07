@@ -94,7 +94,7 @@
                              new THREE.Vector2(0.4,9.15)],
                          ...curve7.getPoints(20)];
 
-         hetmanGeometry =  new THREE.LatheGeometry(points, 200);
+         hetmanGeometry =  new THREE.LatheGeometry(points, 100);
          const hetmanMesh = new THREE.Mesh(hetmanGeometry, 
                new THREE.MeshPhongMaterial({
                     color: 0x654321,
@@ -243,7 +243,7 @@
 </head>
 <body onload="init()">
  
-<h2>Three.js Modeling Demo: Merry-Go-Round</h2>
+<h2>Three.js Hetman</h2>
  
 <noscript>
    <p style="color: #AA0000; font-weight: bold">Sorry, but this page requires JavaScript!</p>
