@@ -27,18 +27,28 @@
     uniform float u_width;   // width of canvas
     uniform float u_height;  // height of canvas
     uniform float u_pointSize;
+
+    uniform bool u_rop;
     
     attribute vec4 a_color;
     varying vec4 v_color;
+
     
     void main() {
         float x,y;  // vertex position in clip coordinates
         
-        x = a_coords.x/u_width * 2.0 - 1.0;  // convert pixel coords to clip coords
-        y = 1.0 - a_coords.y/u_height * 2.0;
-        
+        if (u_rop) {
+            x = (a_coords.x / u_width) * 2.0 - 1.0;
+            y = (a_coords.y / u_height) * 2.0 - 1.0;
+        }
+        else {
+            x = a_coords.x/u_width * 2.0 - 1.0;  // convert pixel coords to clip coords
+            y = 1.0 - a_coords.y/u_height * 2.0;
+            gl_PointSize = u_pointSize;
+        }
+
         gl_Position = vec4(x, y, 0.0, 1.0);
-        gl_PointSize = u_pointSize;
+        
         v_color = a_color;
     }
 </script>
@@ -51,9 +61,14 @@
     #endif
     
     varying vec4 v_color;
+    uniform bool u_rop;
 
     void main() {
         gl_FragColor = vec4(v_color);
+
+        /*if (u_rop){
+            //
+        }*/
     }
 </script>
 
@@ -67,12 +82,14 @@ var gl;     // The webgl context.
 var u_width_loc;        // Location of "width" uniform, which holds the width of the canvas.
 var u_height_loc;       // Location of "height" uniform, which holds the height of the canvas.
 var u_pointSize_loc;    // Location of "pointSize" uniform, which gives the size for point primitives.
+var u_rect_or_line;
 var a_coords_loc;       // Location of the a_coords attribute variable in the shader program;
                         //    This attribute gives the (x,y) coordinates of the points.
 var a_colors_loc;
 
 var a_coords_buffer;    // Buffer to hold the values for a_coords (coordinates for the points)
 var a_colors_buffer;    
+var a_lines_buffer; 
 
 var POINT_COUNT = 30;   // How many points to draw.
 var POINT_SIZE = 64;    // Size in pixel of the square drawn for each point.
@@ -82,10 +99,13 @@ var velocities = new Float32Array( 2*POINT_COUNT ); // Velocity data for points.
       // Note: The xy coords for point number i are in positions[2*i],position[2*i+1].
       // The xy velocity compontents for point number i are in velocities[2*i],velociteis[2*i+1].
       // Position coordinates are in pixels, and velocity components are in pixels per frame.
+
+var lines_vertices;
       
      // The animation runs when this is true; its value is toggled by the space bar.
 var isRunning = true,  
-    isColorful = false;
+    isColorful = false,
+    isLines = false;
 
 
 /**
@@ -98,14 +118,19 @@ function render() {
     // The position data changes for each frame, so we have to send the new values
     // for the position attirbute into the corresponding buffer in the GPU here,
     // in every frame.
-
     gl.bindBuffer(gl.ARRAY_BUFFER, a_coords_buffer);            // Select the buffer we want to use.
     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STREAM_DRAW);  // Send the data.
     gl.vertexAttribPointer(a_coords_loc, 2, gl.FLOAT, false, 0, 0);  // Describes the data format.
+
     
-    // Now, draw the points as a primitive of type gl.POINTS
-    
-    gl.drawArrays(gl.POINTS, 0, POINT_COUNT);
+    if (isLines) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, a_lines_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, lines_vertices, gl.STATIC_DRAW);
+        gl.drawArrays(gl.LINE_STRIP, 0, lines_vertices.length/2);
+    }
+    else {
+        gl.drawArrays(gl.POINTS, 0, POINT_COUNT);
+    }
     
     if (gl.getError() != gl.NO_ERROR) {
         console.log("During render, a GL error has been detected.");
@@ -171,19 +196,27 @@ function doKey(evt) {
             }
             else {
                 isRunning = true;
-            requestAnimationFrame(frame);  // restart the animation
+                requestAnimationFrame(frame);  // restart the animation
             }
             break;
         case 49:
+            isColorful = !isColorful;
             if (isColorful){
-                isColorful = false;
                 gl.enableVertexAttribArray(a_colors_loc);
             }
             else {
-                isColorful = true;
                 gl.disableVertexAttribArray(a_colors_loc);
                 gl.vertexAttrib3f(a_colors_loc, 1, 0, 0);
             }
+        case 50:
+            isLines = !isLines;
+            if (isLines) {
+                gl.uniform1i(u_rect_or_line, true);
+            }
+            else{
+                gl.uniform1i(u_rect_or_line, false);
+            }
+
         default:
             break;
         
@@ -192,6 +225,21 @@ function doKey(evt) {
 } // end doKey();
 
 
+function createPolygonVertices(radius, numSides) {
+    const vertices = [];
+
+    for (let i = 0; i < POINT_COUNT; i++) {
+        
+        for (let i = 0; i <= numSides; i++) {
+            const angle = (i / numSides) * Math.PI * 2;
+            const x = positions[2*i] + radius * Math.cos(angle);
+            const y = positions[2*i+1] + radius * Math.sin(angle);
+            vertices.push(x, y);
+        }
+    }
+    return new Float32Array(vertices);
+}
+
 /* Initialize the WebGL context.  Called from init() */
 function initGL() {
     var colors = new Float32Array(4 * POINT_COUNT); // kolor prymitywu
@@ -199,8 +247,11 @@ function initGL() {
         colors[4*i] = Math.random();
         colors[4*i+1] = Math.random();
         colors[4*i+2] = Math.random();
-        colors[4*i+3] = 1;
+        colors[4*i+3] = Math.random();
     }
+
+    // Example: Hexagon with radius 0.5 at center (0,0)
+    lines_vertices = createPolygonVertices(0, 0, 0.5, 6);
 
     var prog = createProgram(gl,"vshader-source", "fshader-source", "a_coords");
     gl.useProgram(prog);
@@ -210,6 +261,7 @@ function initGL() {
     u_width_loc = gl.getUniformLocation(prog,"u_width");
     u_height_loc = gl.getUniformLocation(prog,"u_height");
     u_pointSize_loc = gl.getUniformLocation(prog,"u_pointSize");
+    u_rect_or_line = gl.getUniformLocation(prog,"u_rop")
     a_coords_loc = gl.getAttribLocation(prog,"a_coords");
     a_colors_loc = gl.getAttribLocation(prog, "a_color");
     
@@ -220,7 +272,11 @@ function initGL() {
     gl.uniform1f(u_pointSize_loc, POINT_SIZE);
     
     /* Create and configure buffers for the attributes. */
-    
+    if (isLines)
+    {
+        a_lines_buffer = gl.createBuffer();
+    }
+
     a_coords_buffer = gl.createBuffer();
     gl.enableVertexAttribArray(a_coords_loc); // data from the attribute will come from a buffer.
 
@@ -229,7 +285,8 @@ function initGL() {
     gl.bindBuffer(gl.ARRAY_BUFFER, a_colors_buffer);            // Select the buffer we want to use.
     gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STREAM_DRAW);  // Send the data.
     gl.vertexAttribPointer(a_colors_loc, 4, gl.FLOAT, false, 0, 0);  // Describes the data format.
-    
+
+
     /* Configure other WebGL options. */
     
     gl.clearColor(0,0,0,1);  // gl.clear will fill canvas with black.
@@ -237,6 +294,9 @@ function initGL() {
     if (gl.getError() != gl.NO_ERROR) {
         console.log("During initialization, a GL error has been detected.");
     }
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 } // end initGL()
 
 
