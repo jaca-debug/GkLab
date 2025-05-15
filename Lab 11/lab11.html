@@ -90,6 +90,9 @@ var a_colors_loc;
 var a_coords_buffer;    // Buffer to hold the values for a_coords (coordinates for the points)
 var a_colors_buffer;    
 var a_lines_buffer; 
+var vertex_buffer;
+var colors;
+var square_colors;
 
 var POINT_COUNT = 30;   // How many points to draw.
 var POINT_SIZE = 64;    // Size in pixel of the square drawn for each point.
@@ -105,7 +108,10 @@ var lines_vertices;
      // The animation runs when this is true; its value is toggled by the space bar.
 var isRunning = true,  
     isColorful = false,
-    isLines = false;
+    isLines = false,
+    isPoly = false;
+
+var u_polys;
 
 
 /**
@@ -124,11 +130,51 @@ function render() {
 
     
     if (isLines) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, a_colors_buffer);            // Select the buffer we want to use.
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(new Float32Array(square_colors)), gl.STREAM_DRAW);  // Send the data.
+        gl.vertexAttribPointer(a_colors_loc, 4, gl.FLOAT, false, 0, 0);  // Describes the data format.
+
         gl.bindBuffer(gl.ARRAY_BUFFER, a_lines_buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, lines_vertices, gl.STATIC_DRAW);
+        // gl.bufferData(gl.ARRAY_BUFFER, lines_vertices, gl.STATIC_DRAW);
         gl.drawArrays(gl.LINE_STRIP, 0, lines_vertices.length/2);
     }
+    else if (isPoly) {
+        const radius = 50;
+        const polyVertices = [];
+        const polyColors = colors;
+        
+        for (let i = 0; i < POINT_COUNT; i++) {
+            for (let j = 0; j <= 11; j++) {
+                const angle = (j / 11) * Math.PI * 2;
+                polyVertices.push(
+                    positions[2*i] + radius * Math.cos(angle),
+                    positions[2*i+1] + radius * Math.sin(angle)
+                );
+            }
+        }
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, a_coords_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(polyVertices), gl.STREAM_DRAW);
+        gl.vertexAttribPointer(a_coords_loc, 2, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, a_colors_buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, polyColors, gl.STREAM_DRAW);
+        gl.vertexAttribPointer(a_colors_loc, 4, gl.FLOAT, false, 0, 0);
+
+        const VERTICES_PER_POLY = 12;
+        for (let i = 0; i < POINT_COUNT; i++) {
+            gl.drawArrays(
+                gl.TRIANGLE_FAN,
+                i * VERTICES_PER_POLY,
+                VERTICES_PER_POLY
+            );
+        }
+    } 
     else {
+        gl.bindBuffer(gl.ARRAY_BUFFER, a_colors_buffer);            // Select the buffer we want to use.
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(square_colors), gl.STREAM_DRAW);  // Send the data.
+        gl.vertexAttribPointer(a_colors_loc, 4, gl.FLOAT, false, 0, 0);  // Describes the data format.
+
         gl.drawArrays(gl.POINTS, 0, POINT_COUNT);
     }
     
@@ -216,6 +262,14 @@ function doKey(evt) {
             else{
                 gl.uniform1i(u_rect_or_line, false);
             }
+        case 51:
+            isPoly = !isPoly
+            if (isPoly) {
+
+            }
+            else {
+
+            }
 
         default:
             break;
@@ -224,6 +278,46 @@ function doKey(evt) {
     
 } // end doKey();
 
+
+function generatePolygonColors() {
+    //var colors = new Float32Array(12 * 4 * POINT_COUNT); // kolor prymitywu
+    var colors = [];
+    square_colors = [];
+    
+    // kolory wielokątów 
+    for(let i = 0; i < POINT_COUNT; i++){
+        let red = Math.random(),
+            green = Math.random(),
+            blue = Math.random(),
+            alpha = Math.random();
+        
+        for(let j = 0; j < 12; j++) {
+            colors.push(...[red,green,blue,alpha]);
+        }
+    }
+
+    // kolory kwadratow / linii
+    for (let i = 0; i < POINT_COUNT; i++) {
+        square_colors[4*i] = colors[12*i];
+        square_colors[4*i+1] = colors[12*4*i+1];
+        square_colors[4*i+2] = colors[12*4*i+2];
+        square_colors[4*i+3] = colors[12*4*i+3];
+    }
+
+    return new Float32Array(colors);
+}
+
+function generateXPolys() {
+    const polys = [];
+    for (let i = 0; i < POINT_COUNT; i++) {
+        const poly = createPolygonVertices(0.5, 11);
+        
+        for (const val of poly) {
+            polys.push(val);
+        }
+    }
+    return new Float32Array(polys);
+}
 
 function createPolygonVertices(radius, numSides) {
     const vertices = [];
@@ -242,13 +336,8 @@ function createPolygonVertices(radius, numSides) {
 
 /* Initialize the WebGL context.  Called from init() */
 function initGL() {
-    var colors = new Float32Array(4 * POINT_COUNT); // kolor prymitywu
-    for (let i = 0; i < POINT_COUNT; i++) {
-        colors[4*i] = Math.random();
-        colors[4*i+1] = Math.random();
-        colors[4*i+2] = Math.random();
-        colors[4*i+3] = Math.random();
-    }
+    u_polys = generateXPolys();
+    colors = generatePolygonColors();
 
     // Example: Hexagon with radius 0.5 at center (0,0)
     lines_vertices = createPolygonVertices(0, 0, 0.5, 6);
@@ -264,6 +353,7 @@ function initGL() {
     u_rect_or_line = gl.getUniformLocation(prog,"u_rop")
     a_coords_loc = gl.getAttribLocation(prog,"a_coords");
     a_colors_loc = gl.getAttribLocation(prog, "a_color");
+
     
     /* Assign initial values to uniforms. */    
     
@@ -276,18 +366,18 @@ function initGL() {
     {
         a_lines_buffer = gl.createBuffer();
     }
+    else if (isPoly) { vertex_buffer = gl.createBuffer(); }
 
     a_coords_buffer = gl.createBuffer();
     gl.enableVertexAttribArray(a_coords_loc); // data from the attribute will come from a buffer.
 
     a_colors_buffer = gl.createBuffer();
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, a_colors_buffer);            // Select the buffer we want to use.
-    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STREAM_DRAW);  // Send the data.
-    gl.vertexAttribPointer(a_colors_loc, 4, gl.FLOAT, false, 0, 0);  // Describes the data format.
-
-
     /* Configure other WebGL options. */
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, a_colors_buffer);            // Select the buffer we want to use.
+    gl.bufferData(gl.ARRAY_BUFFER, square_colors, gl.STREAM_DRAW);  // Send the data.
+    gl.vertexAttribPointer(a_colors_loc, 4, gl.FLOAT, false, 0, 0);  // Describes the data format.
     
     gl.clearColor(0,0,0,1);  // gl.clear will fill canvas with black.
     
