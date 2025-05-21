@@ -96,6 +96,7 @@
 
 <script src="resources/gl-matrix.js"></script>
 <script src="resources/basic-object-models-IFS.js"></script>
+<script src="resources/teapot-model-IFS.js"></script>
 <script>
 
 "use strict";
@@ -119,7 +120,7 @@ var normalMatrix = mat3.create();  // matrix for transforming normal vectors
 
 var frameNumber = 0;  // frame number during animation
 
-var cone, cylinder, cube;  // Basic objects, created using function createModel and basic-object-models-IFS.js.
+var cone, cylinder, cube, teapot;  // Basic objects, created using function createModel and basic-object-models-IFS.js.
                            // The cube is 1 unit on each side and is centered at (0,0,0).
                            // the cone and cylinder have diameter 1 and height 1 and are centered at 
                            //     (0,0,0), with their axes aligned along the z-axis.
@@ -130,7 +131,9 @@ var currentColor = [1,1,1];   // The current diffuse color; render() functions i
                               // the diffuse color to currentColor when it is called before drawing the object
                               // Specular color properties, which don't change, are set in initGL()
 
-var rotateX = 0, rotateY = 0;   // Overal rotation of model, in radians, set by mouse dragging.                          
+var rotateX = 0, rotateY = 0;   // Overal rotation of model, in radians, set by mouse dragging.             
+
+var rotater = 0.01;
                                
 /**
  * Draws the image, which consists of either the "world" or a closeup of the "car".
@@ -147,9 +150,81 @@ function draw() {
     mat4.rotateX(modelview,modelview,rotateX);
     mat4.rotateY(modelview,modelview,rotateY);
     
-    currentColor = [1, 0.6, 1]; // light magenta
-    cube.render();  // As an example, show an unscaled cube.
+    // podstawa
+    pushMatrix();
+    currentColor = [0.8, 0, 0];
+    mat4.translate(modelview, modelview, [0, -7, 0])
+    mat4.scale(modelview, modelview, [5, 1, 5]);
+    cube.render();  
+    popMatrix();
+
+    // ramie
+    pushMatrix();
+    currentColor = [1, 0.75, 0.3];
+    mat4.translate(modelview, modelview, [0, -1.5, 0])
+    mat4.scale(modelview, modelview, [0.5, 10, 0.5]);
+    mat4.rotate(modelview, modelview, Math.PI*0.5, [1, 0, 0])
+    cylinder.render();  
+    popMatrix();
+
+    // dzban
+    pushMatrix();
+    currentColor = [0.4, 0.75, 0.45]
+    mat4.translate(modelview, modelview, [1.75, -6.125, 1.75])
+    mat4.rotate(modelview,modelview, -Math.PI *0.25, [0,1,0])
+    mat4.scale(modelview, modelview, [0.05, 0.05, 0.05]);
+    teapot.render();  
+    popMatrix();
+
+    //obracacz
+    pushMatrix();
+    mat4.translate(modelview, modelview, [0, 3.5, 0.2]);
+    mat4.rotate(modelview,modelview, rotater, [0,0,1]);
+
+    // a w nim łopatki 
+    pushMatrix();
+    currentColor = [0.8, 1, 1];
+    mat4.translate(modelview, modelview, [-0.5, 0, 0]);
+    mat4.rotate(modelview,modelview, Math.PI*0.5, [0,1,0]);
+    cone.render(); 
+    popMatrix();
+    pushMatrix();
+    mat4.translate(modelview, modelview, [-3.5, 0, 0]);
+    mat4.scale(modelview,modelview, [5,1,1])
+    mat4.rotate(modelview,modelview, -Math.PI*0.5, [0,1,0]);
+    cone.render(); 
+    popMatrix();
+
+    pushMatrix();
+    mat4.translate(modelview, modelview, [0.4, -0.4, 0]);
+    mat4.rotate(modelview,modelview, -Math.PI*0.5, [0,1,0]);
+    mat4.rotate(modelview,modelview, -Math.PI*0.33, [1,0,0]);
+    cone.render(); 
+    popMatrix();
+    pushMatrix();
+    mat4.translate(modelview, modelview, [1.9, -2.95, 0]);
+    mat4.rotate(modelview,modelview, -Math.PI*0.5, [0,1,0]);
+    mat4.rotate(modelview,modelview, -Math.PI*1.33, [1,0,0]);
+    mat4.scale(modelview,modelview, [1,1,5])
+    cone.render(); 
+    popMatrix();
+
+    pushMatrix();
+    mat4.translate(modelview, modelview, [0.4, 0.4, 0]);
+    mat4.rotate(modelview,modelview, -Math.PI*0.5, [0,1,0]);
+    mat4.rotate(modelview,modelview, Math.PI*0.33, [1,0,0]);
+    cone.render(); 
+    popMatrix();
+    pushMatrix();
+    mat4.translate(modelview, modelview, [1.8, 3.0, 0]);
+    mat4.rotate(modelview,modelview, -Math.PI*0.5, [0,1,0]);
+    mat4.rotate(modelview,modelview, -Math.PI*0.66, [1,0,0]);
+    mat4.scale(modelview,modelview, [1,1,5])
+    cone.render(); 
+    popMatrix();
     
+    // pop obracarki
+    popMatrix();
 } // end draw();
 
 
@@ -372,6 +447,7 @@ var animating = false;
 
 function frame() {
     if (animating) {
+        rotater += Math.PI * 0.1;
         frameNumber += 1;
         draw();
         requestAnimationFrame(frame);
@@ -422,6 +498,7 @@ function init() {
     cone = createModel(uvCone());            // create the basic objects
     cylinder = createModel(uvCylinder());    //    uvCone(), uvCylinder(), and cube()
     cube = createModel(cube());              //    are defined in basic-object-models-IFS.js
+    teapot = createModel(teapotModel);
  
     draw();
 }
